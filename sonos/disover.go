@@ -2,7 +2,6 @@ package sonos
 
 import (
 	"bufio"
-	"fmt"
 	"net"
 	"net/http"
 	"strings"
@@ -24,21 +23,21 @@ const serverFilterWord = "Sonos"
 func Discover() <-chan rxgo.Item {
 	out := make(chan rxgo.Item)
 
-	conn, err := setupUDPDiscovery()
-	if err != nil {
-
-	}
-	reader := bufio.NewReader(conn)
-
 	go func() {
+		conn, err := setupUDPDiscovery()
+		if err != nil {
+			out <- rxgo.Error(err)
+		}
+		reader := bufio.NewReader(conn)
+
 		for true {
 			req, err := http.ReadRequest(reader)
 			if err != nil {
-				fmt.Println(err) // todo what do?
+				out <- rxgo.Error(err)
 			}
 			ctrl, err := parseFoundHeader(req)
 			if err != nil {
-				fmt.Println(err) // todo what do?!
+				out <- rxgo.Error(err)
 			} else if ctrl != nil {
 				out <- rxgo.Of(ctrl)
 			}
