@@ -16,17 +16,17 @@ type Controller struct {
 	Location string
 }
 
+// Creates a new Controller model from information aquired via UPNP discovery
 func ControllerFromDiscovery(location string, usn string) (*Controller, error) {
 	ip, err := ipFromLocation(location)
 	if err != nil {
 		return nil, err
-	} else {
-		return &Controller{IP: ip, USN: usn, Location: location}, nil // how to do this correctly?
 	}
+	return &Controller{IP: ip, USN: usn, Location: location}, nil // how to do this correctly?
 }
 
 func (ctrl Controller) String() string {
-	return fmt.Sprintf("Sonos device %v at %v", ctrl.USN, ctrl.IP)
+	return fmt.Sprintf("SonosController{IP: %v, USN: %v}", ctrl.IP, ctrl.USN)
 }
 
 func ipFromLocation(location string) (string, error) {
@@ -37,8 +37,7 @@ func ipFromLocation(location string) (string, error) {
 		host, _, err := net.SplitHostPort(url.Host)
 		if err != nil {
 			return "", err
-		} else {
-			return host, nil
 		}
+		return host, nil
 	}
 }
