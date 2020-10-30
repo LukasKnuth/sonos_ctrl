@@ -22,7 +22,7 @@ func ControllerFromDiscovery(location string, usn string) (*Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Controller{IP: ip, USN: usn, Location: location}, nil // how to do this correctly?
+	return &Controller{IP: ip, USN: usn, Location: location}, nil
 }
 
 func (ctrl Controller) String() string {
