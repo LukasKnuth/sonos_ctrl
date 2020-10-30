@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/LukasKnuth/sonos_ctrl/sonos/models"
+
+	"github.com/reactivex/rxgo/v2"
 )
 
 const multicastAddr = "239.255.255.250:1900"
@@ -19,8 +21,8 @@ ST: urn:schemas-upnp-org:device:ZonePlayer:1`
 const serverFilterWord = "Sonos"
 
 // Discover Sonos speakers on the network automatically.
-func Discover() <-chan *models.Controller {
-	out := make(chan *models.Controller)
+func Discover() <-chan rxgo.Item {
+	out := make(chan rxgo.Item)
 
 	conn, err := setupUDPDiscovery()
 	if err != nil {
@@ -38,7 +40,7 @@ func Discover() <-chan *models.Controller {
 			if err != nil {
 				fmt.Println(err) // todo what do?!
 			} else if ctrl != nil {
-				out <- ctrl
+				out <- rxgo.Of(ctrl)
 			}
 		}
 	}()
